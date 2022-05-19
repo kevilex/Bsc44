@@ -1,0 +1,7 @@
+<launch>
+
+    <param name="boxdesc" command="xacro  '$(find ur_description)/urdf/box.urdf.xacro'" />
+    <!-- push box description to factory and spawn box in gazebo -->
+    <node name="boxcreate" pkg="gazebo_ros" type="spawn_model" args="-urdf -param boxdesc -model box_model" respawn="false" output="screen" />
+
+</launch>

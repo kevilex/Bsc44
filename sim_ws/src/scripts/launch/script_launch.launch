@@ -1,0 +1,7 @@
+<launch>
+
+<node pkg="scripts" name="Test" type="Test.py" output="screen"> 
+
+</node>
+
+</launch>

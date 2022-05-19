@@ -1,0 +1,7 @@
+<launch>
+
+<node pkg="urmove" name="Collision" type="collision.py" output="screen"> 
+
+</node>
+
+</launch>

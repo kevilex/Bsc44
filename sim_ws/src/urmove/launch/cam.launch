@@ -1,0 +1,16 @@
+<launch>
+
+  <!--get the path for urdf-->
+  <arg name="cammodel" default="$(find ur_description)/urdf/test_d435_camera.urdf.xacro"/>
+  <param name="camdesc" command="$(find xacro)/xacro $(arg cammodel)" />
+  <!-- move and rotate the camera start position -->
+  <arg name="cam_pose" value="-x 0 -y 0 -z 3 -P 1.57" />
+  <!-- push cam description to factory and spawn cam in gazebo -->
+  <node name="cam_spawner" pkg="gazebo_ros" type="spawn_model"
+          args="-urdf -model cam -param camdesc $(arg cam_pose)" respawn="false" output="screen" />
+
+
+  
+
+</launch>
+

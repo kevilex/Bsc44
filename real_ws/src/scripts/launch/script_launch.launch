@@ -1,0 +1,11 @@
+<launch>
+
+    <!-- Starting the movement-scripts -->
+    <node pkg="scripts" name="HW_launcher" type="launcher.sh" output="screen" /> 
+    
+    
+    <!-- Launching a pcl nodelet to filter the PC-data -->
+    <include file="$(dirname)/camera.launch"/>
+
+
+</launch>
