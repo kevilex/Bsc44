@@ -182,9 +182,14 @@ int main(int argc, char** argv)
   moveit::core::RobotState start_state(*move_group_interface.getCurrentState());
   geometry_msgs::Pose start_pose2;
   start_pose2.orientation.w = 1.0;
+/*
   start_pose2.position.x = -0.1;
   start_pose2.position.y = 0.2;
-  start_pose2.position.z = sqrt(0.3- pow(0.2, 2));
+  start_pose2.position.z = sqrt(0.2- pow(0.2, 2));
+*/
+  start_pose2.position.x = ((cos(0/100)*sin(0/100))/5.0) + 0.45;
+  start_pose2.position.y = (sin((0/100) + (3.14/2.0)))/5;
+  start_pose2.position.z = ((sin(0/100)*(sin(0/100)))/5.0) + 0.2;
   start_state.setFromIK(joint_model_group, start_pose2);
   move_group_interface.setStartState(start_state);
 
@@ -198,25 +203,47 @@ int main(int argc, char** argv)
   move_group_interface.clearPathConstraints();
   move_group_interface.move();
 
-  int test = 0;
   std::vector<geometry_msgs::Pose> waypoints;
-  for (int i = -20; i <= 20; i++){
-    float x = i/100;
-    float z = sqrt(0.3 - pow(x, 2));
+  for (int e = 0; e <= 314; e = e + 31){
+    double r = sin(e/100);
+    double x = sin(e/100);
+    double y = sin((e/100) + (3.14/2.0));
 
-    geometry_msgs::Pose target_pose3 = start_pose2;
-    target_pose3.position.x = x;
-    target_pose3.position.y = 0.2;
-    target_pose3.position.z = z;
+    for (int i = 0; i <= 314; i = i + 3){
+      
+      double x = ((cos(i/100)*r)/4.0) + 0.45;
+      double y = y/5.0;
+      double z = ((sin(i/100)*r)/4.0) + 0.3;
 
-    waypoints.push_back(target_pose3);  
+      geometry_msgs::Pose target_pose3 = start_pose2;
+      target_pose3.position.x = x;
+      target_pose3.position.y = y;
+      target_pose3.position.z = z;
 
-    std::string iteration = std::to_string(x + 20);
-    ROS_INFO_NAMED("info", "iteration", iteration);
-
+      waypoints.push_back(target_pose3);
+    }
   }
-  move_group_interface.setMaxVelocityScalingFactor(0.05);
-  move_group_interface.setMaxAccelerationScalingFactor(0.05);
+    /*
+    geometry_msgs::Pose target_pose3 = start_pose2;
+    target_pose3.position.x = 0.1;
+    target_pose3.position.y = 0.2;
+    target_pose3.position.z = 0.1;
+    waypoints.push_back(target_pose3);
+
+    target_pose3.position.x = 0.2;
+    target_pose3.position.y = 0.2;
+    target_pose3.position.z = 0.1;
+    waypoints.push_back(target_pose3);
+
+    target_pose3.position.x = 0.3;
+    target_pose3.position.y = 0.2;
+    target_pose3.position.z = 0.1;
+    waypoints.push_back(target_pose3);  
+*/
+
+  move_group_interface.setMaxVelocityScalingFactor(0.01);
+  move_group_interface.setMaxAccelerationScalingFactor(0.01);
+  move_group_interface.setGoalTolerance(0.3);
 
   // We want the Cartesian path to be interpolated at a resolution of 1 cm
   // which is why we will specify 0.01 as the max step in Cartesian
@@ -224,7 +251,7 @@ int main(int argc, char** argv)
   // Warning - disabling the jump threshold while operating real hardware can cause
   // large unpredictable motions of redundant joints and could be a safety issue
   moveit_msgs::RobotTrajectory trajectory;
-  const double jump_threshold = 0.02;
+  const double jump_threshold = 0.00;
   const double eef_step = 0.02;
   double fraction = move_group_interface.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
   ROS_INFO_NAMED("tutorial", "Visualizing plan 4 (Cartesian path) (%.2f%% achieved)", fraction * 100.0);
