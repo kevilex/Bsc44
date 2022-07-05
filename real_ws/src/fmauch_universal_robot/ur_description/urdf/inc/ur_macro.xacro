@@ -333,7 +333,6 @@
       <child link="${prefix}tool0"/>
     </joint>
 
-<!--
     <link name="ground_plane_box">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -355,10 +354,9 @@
     <joint name="ground_plane_box" type="fixed">
         <parent link="world" />
         <child link="ground_plane_box" />
-        <origin xyz="-0.26 0.26 0.69" rpy="0 0 0" />
+        <origin xyz="-0.3 0 -0.05" rpy="0 0 -0.785" />
     </joint>
     
--->
 
     <link name="world">
     </link>
@@ -366,7 +364,7 @@
     <joint name="world" type="fixed">
         <parent link="world" />
         <child link="base_link"/>
-        <origin xyz="0 0 0.74" rpy="0 0 -0.7854"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
 
     <link name="camera_link">

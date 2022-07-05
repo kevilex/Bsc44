@@ -1,2 +1,2 @@
-realsense2_description:realsense_gazebo_plugin:scripts:ur_description:urmove
+SurfMove:SurfMovin:realsense2_description:realsense_gazebo_plugin:scripts:ur_description:urmove
 -DCATKIN_DEVEL_PREFIX=/home/kevin/Bsc/sim_ws/devel -DCMAKE_INSTALL_PREFIX=/home/kevin/Bsc/sim_ws/install -G Unix Makefiles

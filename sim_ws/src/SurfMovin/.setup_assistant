@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: SurfMove
+    relative_path: ur5_robot.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/ur5.srdf
+  CONFIG:
+    author_name: Kevin Hermann Skaar
+    author_email: kevin@skaar-net.no
+    generated_timestamp: 1655466206

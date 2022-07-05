@@ -1,0 +1,17 @@
+path_constraint:
+  name: some_constraints
+  constraints:
+  - type: visibility
+    target_radius: 0.5
+    target_pose:
+      frame_id: 'base_link'
+      position: [0.25, 0.25, 0]
+      orientation: [0, 0, 0] #RPY
+    cone_sides: 4
+    sensor_pose:
+      frame_id: 'tool0'
+      position: [0, 0, 0]
+      orientation: [0, 0, 0] #RPY
+    max_view_angle: 1.1
+    max_range_angle: 0.55
+    weight: 1.0

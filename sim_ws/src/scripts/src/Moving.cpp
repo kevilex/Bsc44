@@ -4,6 +4,7 @@
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 
+
 #include <moveit_msgs/DisplayRobotState.h>
 #include <moveit_msgs/DisplayTrajectory.h>
 
@@ -83,57 +84,7 @@ int main(int argc, char** argv)
             move_group_interface.getJointModelGroupNames().end(), std::ostream_iterator<std::string>(std::cout, ", "));
 
 /*
-// pose goal
-  geometry_msgs::Pose target_pose1;
-  target_pose1.orientation.w = 1.0;
-  target_pose1.position.x = 0.3;
-  target_pose1.position.y = -0.0;
-  target_pose1.position.z = 0.5;
-  //move_group_interface.setPoseTarget(target_pose1);
-// visualize
-  moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-  bool success = (move_group_interface.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-  ROS_INFO_NAMED("tutorial", "Visualizing plan 1 (pose goal) %s", success ? "" : "FAILED");
-  visual_tools.publishTrajectoryLine(my_plan.trajectory_, joint_model_group);
-  visual_tools.trigger();
-  visual_tools.publishTrajectoryLine(my_plan.trajectory_, joint_model_group);
 
-  // Finally, to execute the trajectory stored in my_plan, you could use the following method call:
-  // Note that this can lead to problems if the robot moved in the meanwhile.
-  move_group_interface.execute(my_plan);
-
-
-  
-  // Planning to a joint-space goal
-  // To start, we'll create an pointer that references the current robot's state.
-  // RobotState is the object that contains all the current position/velocity/acceleration data.
-  moveit::core::RobotStatePtr current_state = move_group_interface.getCurrentState();
-
-  // Next get the current set of joint values for the group.
-  std::vector<double> joint_group_positions;
-  current_state->copyJointGroupPositions(joint_model_group, joint_group_positions);
-
-  // Now, let's modify one of the joints, plan to the new joint space goal and visualize the plan.
-  joint_group_positions[0] = -tau / 6;  // -1/6 turn in radians
-  move_group_interface.setJointValueTarget(joint_group_positions);
-
-  // We lower the allowed maximum velocity and acceleration to 5% of their maximum.
-  // The default values are 10% (0.1).
-  // Set your preferred defaults in the joint_limits.yaml file of your robot's moveit_config
-  // or set explicit factors in your code if you need your robot to move faster.
-
-
-  success = (move_group_interface.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-  ROS_INFO_NAMED("tutorial", "Visualizing plan 2 (joint space goal) %s", success ? "" : "FAILED");
-
-  
-  // Visualize the plan in RViz
-  visual_tools.deleteAllMarkers();
-  visual_tools.publishText(text_pose, "Joint Space Goal", rvt::WHITE, rvt::XLARGE);
-  visual_tools.publishTrajectoryLine(my_plan.trajectory_, joint_model_group);
-  visual_tools.trigger();
-  //visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to continue the demo");
-  */
 
   // Planning with Path Constraints
   // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -179,71 +130,69 @@ int main(int argc, char** argv)
   // Note that this will only work if the current state already
   // satisfies the path constraints. So we need to set the start
   // state to a new pose.
+
+
   moveit::core::RobotState start_state(*move_group_interface.getCurrentState());
   geometry_msgs::Pose start_pose2;
   start_pose2.orientation.w = 1.0;
-/*
-  start_pose2.position.x = -0.1;
-  start_pose2.position.y = 0.2;
-  start_pose2.position.z = sqrt(0.2- pow(0.2, 2));
-*/
-  start_pose2.position.x = ((cos(0/100)*sin(0/100))/5.0) + 0.45;
+
+
+  start_pose2.position.x = ((cos(0/100)*sin(0/100))/5.0) + 0.5;
   start_pose2.position.y = (sin((0/100) + (3.14/2.0)))/5;
   start_pose2.position.z = ((sin(0/100)*(sin(0/100)))/5.0) + 0.2;
-  start_state.setFromIK(joint_model_group, start_pose2);
   move_group_interface.setStartState(start_state);
 
-  // Now we will plan to the earlier pose target from the new
-  // start state that we have just created.
-  move_group_interface.setPoseTarget(start_pose2);
-  // Planning with constraints can be slow because every sample must call an inverse kinematics solver.
-  // Lets increase the planning time from the default 5 seconds to be sure the planner has enough time to succeed.
-  move_group_interface.setPlanningTime(10.0);
 
-  move_group_interface.clearPathConstraints();
+  move_group_interface.setPoseTarget(start_pose2);
+
   move_group_interface.move();
 
+  //moveit_msgs::VisibilityConstraint VCM;
+  //VCM.max_view_angle = 1.1;
+  //VCM.max_range_angle = 0.55;
+
+  //kinematic_constraints::VisibilityConstraint 
+  
+
+  //move_group_interface.setPathConstraints(VCM);
+
   std::vector<geometry_msgs::Pose> waypoints;
+  
+  double first = 0;
+  double prev = 1;
+  double count;
   for (int e = 0; e <= 314; e = e + 31){
-    double r = sin(e/100);
-    double x = sin(e/100);
+
     double y = sin((e/100) + (3.14/2.0));
+    double r = sin(e/100);
 
-    for (int i = 0; i <= 314; i = i + 3){
-      
-      double x = ((cos(i/100)*r)/4.0) + 0.45;
-      double y = y/5.0;
-      double z = ((sin(i/100)*r)/4.0) + 0.3;
+    for(int i = 0; i <= 314; i = i + 3){
+      first = ((cos(i/100)*r)/5.0) + 0.5;
+      if(first != prev){
+        
+        double x = ((cos(i/100)*r)/5.0) + 0.5;
+        double y = y/5.0;
+        double z = ((sin(i/100)*r)/5.0) + 0.3;
 
-      geometry_msgs::Pose target_pose3 = start_pose2;
-      target_pose3.position.x = x;
-      target_pose3.position.y = y;
-      target_pose3.position.z = z;
+        geometry_msgs::Pose target_pose3 = start_pose2;
+        target_pose3.position.x = x;
+        target_pose3.position.y = y;
+        target_pose3.position.z = z;
 
-      waypoints.push_back(target_pose3);
+        waypoints.push_back(target_pose3);
+      }
+      prev = ((cos(i/100)*r)/5.0) + 0.5;
+      count = count++;
     }
   }
-    /*
-    geometry_msgs::Pose target_pose3 = start_pose2;
-    target_pose3.position.x = 0.1;
-    target_pose3.position.y = 0.2;
-    target_pose3.position.z = 0.1;
-    waypoints.push_back(target_pose3);
+  
+    ROS_INFO_NAMED("tutorial", "(%.2f%% points)", count);
 
-    target_pose3.position.x = 0.2;
-    target_pose3.position.y = 0.2;
-    target_pose3.position.z = 0.1;
-    waypoints.push_back(target_pose3);
 
-    target_pose3.position.x = 0.3;
-    target_pose3.position.y = 0.2;
-    target_pose3.position.z = 0.1;
-    waypoints.push_back(target_pose3);  
-*/
-
-  move_group_interface.setMaxVelocityScalingFactor(0.01);
-  move_group_interface.setMaxAccelerationScalingFactor(0.01);
-  move_group_interface.setGoalTolerance(0.3);
+  move_group_interface.setMaxVelocityScalingFactor(0.02);
+  move_group_interface.setMaxAccelerationScalingFactor(0.02);
+  move_group_interface.setGoalTolerance(0.01);
+  move_group_interface.setPlanningTime(20.0);
 
   // We want the Cartesian path to be interpolated at a resolution of 1 cm
   // which is why we will specify 0.01 as the max step in Cartesian
@@ -251,9 +200,13 @@ int main(int argc, char** argv)
   // Warning - disabling the jump threshold while operating real hardware can cause
   // large unpredictable motions of redundant joints and could be a safety issue
   moveit_msgs::RobotTrajectory trajectory;
+  const double eef_step = 0.01;
   const double jump_threshold = 0.00;
-  const double eef_step = 0.02;
-  double fraction = move_group_interface.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
+  double fraction = move_group_interface.computeCartesianPath(waypoints, 
+                                          eef_step, 
+                                          jump_threshold, 
+                                          trajectory,
+                                          true);
   ROS_INFO_NAMED("tutorial", "Visualizing plan 4 (Cartesian path) (%.2f%% achieved)", fraction * 100.0);
 
   // Cartesian motions should often be slow, e.g. when approaching objects. The speed of cartesian

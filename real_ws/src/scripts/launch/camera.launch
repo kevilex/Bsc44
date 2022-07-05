@@ -1,6 +1,6 @@
 <launch>
     <!-- Launching a pcl nodelet to filter the PC-data -->
-    <include file="$(dirname)/pcl.launch"/>
+    <!--<include file="$(dirname)/pcl.launch"/>-->
 
     <!-- Transform publisher to make sure the tf is correct according to the robot. Autobots, roll out-->
     <node pkg="tf2_ros" type="static_transform_publisher" name="Camera_rot" args="0.07 -0.04 2.73 0 3.14 0 world camera_link" />
