@@ -161,11 +161,6 @@ arm.display_trajectory.trajectory.append(plan)
 arm.display_trajectory_publisher.publish(arm.display_trajectory)
 
 arm.group.execute(plan)
-'''
-rospy.loginfo((arm.waypoints[0]))
-rospy.loginfo((arm.waypoints[1]))
-rospy.loginfo((arm.waypoints[2]))
-rospy.loginfo((arm.waypoints[3]))
-'''
+
 
 moveit_commander.roscpp_shutdown()
